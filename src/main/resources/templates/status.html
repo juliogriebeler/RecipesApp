@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Status Home</title>
+</head>
+<body>
+	<table>
+		<thead>
+			<tr>
+				<th>Make</th>
+				<th>Model</th>
+				<th>Description</th>
+				<th>Year</th>
+			</tr>
+		</thead>
+		<tbody>
+		<!--
+			private String firstName;
+			private String lastName;
+			private String email;
+			private String password; 
+		-->
+			<tr th:each="status : ${statusList}">
+				<td th:text="${status.firstName}"></td>
+				<td th:text="${status.lastName}"></td>
+				<td th:text="${status.email}"></td>
+				<td th:text="${status.password}"></td>
+				<td></td>
+			</tr>
+		</tbody>
+	</table>
+	<br />
+	<h2>Adicionar Status</h2>
+	<form action="/addStatus" method="POST">
+		<label for="firstName">Nome</label>
+		<input type="text" id="firstName" name="firstName" /><br>
+		<label for="lastName">Sobrenome</label>
+		<input type="text" id="lastName" name="lastName" /><br>
+		<label for="email">E-mail</label>
+		<input type="text" id="email" name="email" /><br>
+		<label for="password">Senha</label>
+		<input type="password" id="password" name="password" /><br>
+		<label for="password">Confirmação de senha</label>
+		<input type="password" id="confirmPassword" name="confirmPassword" /><br>
+		<input type="submit" />
+	</form>
+	<h2>Pesquisar Usuários</h2>
+	<form action="/search" method="GET">
+		<input type="text" name="search" id="search" th:value="${search}" />
+		<input type="submit" value="Search" />
+	</form>
+</body>
+</html>

@@ -37,7 +37,7 @@ public class RecipesAppTests {
 		r.setName("Recipe name");
 		r.setDescription("Recipe Description");
 		r.setDateCreation(new Date());
-		r.setDishImage("");
+		//r.setDishImage("");
 		r.setDishSuitableQty(3);
 		r.setIsVegetarian(false);
 		

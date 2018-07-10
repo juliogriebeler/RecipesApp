@@ -13,6 +13,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.juliogriebeler.exception.ResourceNotFoundException;
+import br.com.juliogriebeler.exception.RecipeException;
 import br.com.juliogriebeler.model.Recipe;
 import br.com.juliogriebeler.repository.RecipeRepository;
 
@@ -40,14 +42,15 @@ public class RecipeController {
 	RecipeRepository recipeRepository;
 
 	@PostMapping("/recipe")
-	public Recipe createRecipe(@Valid @RequestBody Recipe recipe, @RequestParam("image") MultipartFile recipeImage) {
-		if (recipeImage.isEmpty()) {
+	@CrossOrigin
+	public Recipe save(@Valid @RequestBody Recipe recipe, @RequestParam("dishImage") MultipartFile dishImage) {
+		if (dishImage.isEmpty()) {
 			System.out.println("EMPTY IMAGE");
 		} else {
 			byte[] bytes;
-			String fileName = recipeImage.getOriginalFilename();
+			String fileName = dishImage.getOriginalFilename();
 			try {
-				bytes = recipeImage.getBytes();
+				bytes = dishImage.getBytes();
 				Path path = Paths.get(fileName);
 				Files.write(path, bytes);
 				recipe.setDishImage(fileName);
@@ -58,19 +61,34 @@ public class RecipeController {
 		return recipeRepository.save(recipe);
 	}
 
-	@GetMapping("/recipe")
+	@GetMapping("/recipes")
 	@ResponseBody
-	public List<Recipe> getRecipes(Model model) {
+	@CrossOrigin
+	public List<Recipe> findAll(Model model) {
 		if(model.containsAttribute("isVegetarian")) {
+			System.out.println("IS VEG");
 			return recipeRepository.findByIsVegetarian(Boolean.TRUE);
 		}
+		System.out.println("NOT VEG");
 		return recipeRepository.findAll();
 	}
 
 	@GetMapping("/recipe/{id}")
 	@ResponseBody
-	public Recipe getRecipeById(@PathVariable(value = "id") String recipeId) {
+	@CrossOrigin
+	public Recipe findById(@PathVariable(value = "id") String recipeId) {
 		return recipeRepository.findById(recipeId)
-				.orElseThrow(() -> new ResourceNotFoundException("Recipe", "id", recipeId));
+				.orElseThrow(() -> new RecipeException("Recipe", "id", recipeId));
+	}
+	
+	@DeleteMapping("/recipe/{id}")
+	@ResponseBody
+	public String delete(@PathVariable(value = "id") String recipeId) {
+		try {
+			recipeRepository.deleteById(recipeId);
+		} catch (Exception e) {
+			return "Error deleting recipe with ID " + recipeId;
+		}
+		return "Recipe deleted!";
 	}
 }

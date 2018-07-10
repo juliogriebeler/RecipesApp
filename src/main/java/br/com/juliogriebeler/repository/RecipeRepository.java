@@ -11,4 +11,5 @@ public interface RecipeRepository extends MongoRepository<Recipe, String>{
 	
 	@Query("{isVegetarian : ?0}")
 	public List<Recipe> findByIsVegetarian(Boolean isVegetarian);
+	
 }

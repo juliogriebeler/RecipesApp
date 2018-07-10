@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
-public class ResourceNotFoundException extends RuntimeException {
+public class RecipeException extends RuntimeException {
 
 	/**
 	 * 
@@ -23,7 +23,7 @@ public class ResourceNotFoundException extends RuntimeException {
 	private String fieldName;
 	private Object fieldValue;
 
-	public ResourceNotFoundException(String resourceName, String fieldName, Object fieldValue) {
+	public RecipeException(String resourceName, String fieldName, Object fieldValue) {
 		super(String.format("%s with id %s not found: '%s'", resourceName, fieldName, fieldValue));
 		this.resourceName = resourceName;
 		this.fieldName = fieldName;
